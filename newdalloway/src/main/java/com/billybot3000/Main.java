@@ -4,6 +4,9 @@ import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
+import opennlp.tools.tokenize.TokenizerME;
+import opennlp.tools.tokenize.TokenizerModel;
+import opennlp.tools.util.Span;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,11 +15,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileWriter;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Main {
     
     public static void main(String[] args) {
         sentenceDetection();
+        nameAnalysis();
     }
 
     private static String getText(String filename) {
@@ -33,6 +38,19 @@ public class Main {
         }
         scanner.close();
         return text;
+    }
+
+    private static String[] tokenize() {
+        TokenizerME tokenizer = null;
+        try {
+            FileInputStream file = new FileInputStream("newdalloway/src/main/java/com/billybot3000/models/opennlp-en-ud-ewt-token-1.2-2.5.0.bin");
+            tokenizer = new TokenizerME(new TokenizerModel(file));
+            file.close();
+        } catch(IOException e) {
+            System.out.println("error lmao");
+            System.exit(1);
+        }
+        return tokenizer.tokenize(getText("newdalloway/src/main/java/com/billybot3000/dalloway.txt"));
     }
 
     private static void sentenceDetection() {
@@ -71,6 +89,15 @@ public class Main {
         } catch(IOException e) {
             System.out.println("error lmao");
             System.exit(1);
+        }
+        String[] tokens = tokenize();
+        Span[] names = nameFinder.find(tokens);
+        ArrayList<String> nameList = new ArrayList<String>();
+        for (Span name : names) {
+            for (int i = name.getStart(); i < name.getEnd(); i++) {
+                nameList.add(tokens[name.getStart() + i]);
+                System.out.println(tokens[name.getStart() + i]);
+            }
         }
     }
     
