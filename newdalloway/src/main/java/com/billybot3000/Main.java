@@ -86,8 +86,8 @@ public class Main {
         ArrayList<Integer> septimus = new ArrayList<Integer>();
         ArrayList<Integer> lucrezia = new ArrayList<Integer>();
 
-        for (int i = 0; i < tokens.length; i++) {
-            if (tokens[i].equals("Clarissa") || tokens[i].equals("Mrs. Dalloway")) {
+        for (int i = 0; i < tokens.length - 1; i++) {
+            if (tokens[i].equals("Clarissa") || (tokens[i].equals("Mrs") && tokens[i + 1].equals("Dalloway"))) {
                 clarissa.add(i);
             } else if (tokens[i].equals("Peter") || tokens[i].equals("Walsh")) {
                 peter.add(i);
